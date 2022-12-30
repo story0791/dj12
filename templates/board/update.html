@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block con %}
+    <h1><b>게시글 수정</b></h1>
+    <form method="post">
+        {% csrf_token %}
+        <input class="form-control mt-5" name="sub" value="{{ b.subject }}">
+        <input class="form-control mt-4 mb-4" value="{{ user }}" disabled>
+        <textarea class="form-control" name="con" style="height: 250px;">{{ b.content }}</textarea>
+
+        <div class="text-end mt-4">
+            <button class="btn btn-dark">작성완료</button>
+        </div>
+    </form>
+
+{% endblock %}

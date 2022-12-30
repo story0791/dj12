@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block con %}
+
+    <h1><b>TTS 서비스</b></h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <textarea name="con" style="height: 300px;" class="form-control mt-5" placeholder="변환할 문장을 입력하세요">{{ bf }}</textarea>
+
+        <select name="ncode" class="form-select mt-4">
+            {% for k,v in ndict.items %}
+                <option value="{{k}}" {% if to %}{% if to == k %} selected {% endif %}{% else %}{% if k == 'en' %}selected{% endif %}{% endif %}>{{ v|upper }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="text-end mt-3">
+            <button class="btn btn-dark">변환</button>
+            <a href="/media/tts/{{fn}}.mp3" download class="btn btn-dark {% if not fn %}disabled{% endif %}">다운</a>
+        </div>
+    </form>
+{% endblock %}

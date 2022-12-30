@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block con %}
+
+    {% load mathfilters %}
+
+    <h1><b>{{ t.subject }}</b></h1>
+
+    <div class="row mt-5">
+        <div class="col-sm-8">
+            <textarea class="form-control" disabled style="height: 250px;">{{ t.content }}</textarea>
+        </div>
+        <div class="col-sm-4">
+            <img src="{{ t.maker.getpic }}" width="100%">
+            <div class="text-center mt-3">
+                <h4>made by <b>{{ t.maker }}</b></h4>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+{% if user in t.voter.all %}
+    <!-- 투표 참여했을 때 --->
+        <div class="row mt-5">
+            {% for i in cset %}
+                <div class="col-sm-4">
+                    <label class="form-check-label">
+                        <h4><b>{{ i.name }}</b></h4>
+                    </label>
+                    <div class="progress mt-3">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-label="Animated striped example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width:{{ i.choicer.count|div:t.voter.count|mul:100|floatformat:2}}%">{{ i.choicer.count|div:t.voter.count|mul:100|floatformat:2}}%</div>
+                    </div>
+                    <textarea class="form-control mt-3" style="height: 100px;" disabled>{{ i.comment }}</textarea>
+                </div>
+            {% endfor %}
+        </div> 
+
+    <div class="text-end mt-4">
+        <a href="{% url 'vote:cancel' t.id %}" class="btn btn-danger btn-lg">무르기</a>
+        <a href="{% url 'vote:index' %}" class="btn btn-dark btn-lg">뒤로가기</a>
+    </div>
+
+{% else %}
+<!-- 투표참여전 -->
+
+<form method="post" action="{% url 'vote:vote' t.id %}">
+    {% csrf_token %}
+    <div class="row mt-5">
+        {% for i in cset %}
+            <div class="col-sm-4">
+                <input {% if forloop.first %} checked {% endif %} type="radio" name="cho" value="{{ i.id }}" class="form-check-input">
+                <label class="form-check-label">
+                    <h4><b>{{ i.name }}</b></h4>
+                </label>
+                <textarea class="form-control mt-3" style="height: 100px;" disabled>{{ i.comment }}</textarea>
+            </div>
+        {% endfor %}
+    </div>
+    <div class="text-end mt-4">
+        <button class="btn btn-dark btn-lg">투표하기</button>
+        <a href="{% url 'vote:index' %}" class="btn btn-dark btn-lg">뒤로가기</a>
+    </div>
+</form>
+{% endif %}
+
+
+{% endblock %}
